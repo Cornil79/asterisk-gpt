@@ -4,10 +4,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Обновление и установка зависимостей
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    asterisk \
-    asterisk-dahdi \
-    asterisk-core-sounds-en \
-    asterisk-moh-opsound-wav \
+    gnupg wget \
+ && wget -O - https://downloads.asterisk.org/pub/keys/asterisk-signing-key.asc | gpg --dearmor >/usr/share/keyrings/asterisk-archive-keyring.gpg \
+ && echo "deb [signed-by=/usr/share/keyrings/asterisk-archive-keyring.gpg] https://packages.asterisk.org/deb $(lsb_release -cs) main" > /etc/apt/sources.list.d/asterisk.list \
+ && apt-get update && apt-get install -y --no-install-recommends \
+    asterisk=20.* \
+    asterisk-dahdi=20.* \
+    asterisk-core-sounds-en=20.* \
+    asterisk-moh-opsound-wav=20.* \
     openssl \
     curl \
     vim \
