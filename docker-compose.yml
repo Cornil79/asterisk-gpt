@@ -1,0 +1,29 @@
+services:
+  asterisk:
+    build: ./asterisk
+    container_name: asterisk
+    volumes:
+      - /tmp/audio.pipe:/tmp/audio.pipe
+      - ./asterisk/etc/asterisk:/etc/asterisk
+      - ./certs:/etc/asterisk/keys
+    network_mode: host
+    # ports:
+      # - "5060:5060/udp"
+      # - "8088:8088"
+      #- "10000-20000:10000-20000/udp"
+    tty: true
+    stdin_open: true
+    #restart: unless-stopped
+
+
+  bridge:
+    build: ./bridge
+    container_name: bridge
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AUDIO_PIPE=/tmp/audio.pipe
+    volumes:
+      - /tmp/audio.pipe:/tmp/audio.pipe
+    depends_on:
+      - asterisk
+    #restart: unless-stopped
